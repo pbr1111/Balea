@@ -1,10 +1,9 @@
 ﻿using Antlr4.Runtime.Misc;
 using Balea.Authorization.Abac.Context;
-using Balea.Authorization.Abac.Grammars.BAL;
 using System;
 using System.Globalization;
 using System.Linq.Expressions;
-using static Balea.Authorization.Abac.Grammars.BAL.BalParser;
+using static BalParser;
 
 namespace Balea.DSL.Grammar.Bal
 {
@@ -69,7 +68,7 @@ namespace Balea.DSL.Grammar.Bal
             Expression left = null;
 
             var boolCondition = logicOperation.bool_op().GetText();
-            var binder = boolCondition.Equals(and, StringComparison.InvariantCultureIgnoreCase) 
+            var binder = boolCondition.Equals(and, StringComparison.InvariantCultureIgnoreCase)
                 ? Expression.And : (Binder)Expression.Or;
 
             foreach (var condition in logicOperation.condition())
@@ -125,10 +124,10 @@ namespace Balea.DSL.Grammar.Bal
         private static Expression ParseStringComparasionExpression(ParameterExpression parameterExpression, ConditionContext stringComparerOperation)
         {
             var comparison = stringComparerOperation.str_comp().GetText();
-            
-            if (comparison.Equals("CONTAINS",StringComparison.InvariantCultureIgnoreCase))
+
+            if (comparison.Equals("CONTAINS", StringComparison.InvariantCultureIgnoreCase))
             {
-                return CreatePropertyBagContains(parameterExpression, 
+                return CreatePropertyBagContains(parameterExpression,
                     stringComparerOperation.str_val()[LEFT].GetText(),
                     stringComparerOperation.str_val()[RIGHT].GetText().Replace("\"", ""));
             }
@@ -136,7 +135,7 @@ namespace Balea.DSL.Grammar.Bal
             {
                 // --- LEFT
                 var left = CreatePropertyBagExpression(parameterExpression, stringComparerOperation.str_val()[LEFT].GetText(), typeof(String));
-                
+
                 // --- right 
                 var right = Expression.Constant(stringComparerOperation.str_val()[RIGHT].GetText().Replace("\"", ""));
 
@@ -277,7 +276,7 @@ namespace Balea.DSL.Grammar.Bal
             // -> DslAuthorizationContext["PropertyBag"]
             var propertyBagExpression = Expression.Property(parameterExpression, "Item", Expression.Constant(propertyBag));
 
-            return Expression.Call(propertyBagExpression, typeof(IPropertyBag).GetMethod("Contains"),Expression.Constant(propertyName), Expression.Constant(value));
+            return Expression.Call(propertyBagExpression, typeof(IPropertyBag).GetMethod("Contains"), Expression.Constant(propertyName), Expression.Constant(value));
         }
 
         private static Expression CreateNumberValueExpression(string number) =>

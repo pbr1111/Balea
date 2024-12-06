@@ -5,6 +5,7 @@
     "samples"
   ],
   "sdk": {
-    "version": "8.0.303"
+    "version": "8.0.303",
+    "rollForward": "latestFeature"
   }
 }
